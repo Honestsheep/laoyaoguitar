@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="老姚吉他课程乐谱，配套从零起步基础教学的吉他谱">
+    <title>老姚吉他 - 课程乐谱</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        /* 导航栏课程选择下拉菜单样式 */
+        .headbox {
+            position: relative;
+        }
+
+        .course-nav-item {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .course-dropdown-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 200px;
+            background-color: #1a1a1a;
+            border: 1px solid #3d3d3d;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 200;
+            overflow: hidden;
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .course-nav-item:hover .course-dropdown-container {
+                display: block;
+            }
+        }
+
+        .course-dropdown-container.show {
+            display: block;
+        }
+
+        .dropdown-title {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            color: #0ABAB5;
+            border-bottom: 1px solid #3d3d3d;
+        }
+
+        .course-dropdown {
+            width: 100%;
+            padding: 10px 15px;
+            background-color: #2d2d2d;
+            color: white;
+            border: none;
+            border-bottom: 1px solid #3d3d3d;
+            font-size: 0.9rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            cursor: pointer;
+        }
+
+        .course-dropdown:focus {
+            outline: none;
+            background-color: #3d3d3d;
+        }
+
+        /* 乐谱区域样式 */
+        .course-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 10px;
+            box-sizing: border-box;
+        }
+
+        .score-image-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            max-height: calc(100vh - 300px);
+            overflow-y: auto;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            background-color: rgba(0,0,0,0.3);
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .score-image-item {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        /* 乐谱加载状态容器 */
+        .score-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header class="headbox">
+        <div class="loayao-logo">
+            <a href="./index.html">
+                <img src="./image/logo.webp" alt="老姚吉他logo" loading="lazy">
+            </a>
+        </div>  
+        <span><a href="./index.html">从零起步基础教学</a></span>
+        <div class="course-nav-item active" id="courseNavItem">
+            <span class="active">乐谱</span>
+            <div class="course-dropdown-container" id="courseDropdownContainer">
+                <div class="dropdown-title">选择课程：</div>
+                <select class="course-dropdown" id="courseDropdown">
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <div class="course-container">
+        <div class="score-image-wrapper" id="scoreImageContainer">
+            <div class="score-loading">
+                <span class="loading"></span>
+                <span>加载中...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="metronome" id="metronome">
+        <div class="metronome-controls">
+            <div class="control-group">
+                <div class="bpm-control">
+                    <button id="decreaseBpm">-</button>
+                    <input type="number" class="bpm-display" id="bpmValue" value="80" min="30" max="240" step="1">
+                    <button id="increaseBpm">+</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <select id="rhythmSelect">
+                    <option value="4/4">4/4</option>
+                    <option value="3/4">3/4</option>
+                    <option value="6/8">6/8</option>
+                    <option value="2/4">2/4</option>
+                    <option value="5/4">5/4</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <select id="soundSelect" class="select-group">
+                    <option value="wood">木鱼</option>
+                    <option value="electronic">电子音</option>
+                    <option value="drum">军鼓</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <button id="playPauseBtn" class="select-group">开始</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 公共页脚 -->
+    <script src="./footer.js"></script>
+    <div class="loayao-link" id="footerLinks"></div>
+
+    <script>
+        const courseConfig = {};
+        for (let i = 1; i <= 100; i++) {
+            courseConfig[`第${i}课`] = 2;
+        }
+        // 覆盖特殊课程的乐谱数量
+        const specialCourses = {
+            "第1课":1, "第2课":1, "第3课":1, "第4课":1, "第5课":1, "第6课":1, "第7课":1, "第8课":1, "第9课":1,
+            "第11课":1, "第13课":1, "第14课":1, "第17课":1, "第20课":1, "第21课":1, "第26课":3, "第29课":3,
+            "第31课":3, "第34课":3, "第38课":3, "第41课":3, "第43课":3, "第44课":3, "第45课":3, "第46课":3,
+            "第47课":3, "第49课":3, "第50课":3, "第51课":4, "第52课":3, "第55课":3, "第56课":4, "第57课":3,
+            "第58课":3, "第59课":3, "第60课":4, "第61课":3, "第62课":3, "第63课":4, "第64课":3, "第65课":3,
+            "第66课":3, "第67课":3, "第68课":4, "第69课":5, "第71课":4, "第72课":3, "第74课":3, "第75课":3,
+            "第76课":5, "第79课":3, "第80课":1, "第82课":1, "第83课":1, "第84课":4, "第85课":3, "第86课":4,
+            "第87课":1, "第89课":4, "第90课":4, "第91课":3, "第92课":3, "第93课":3, "第94课":5, "第96课":1
+        };
+        Object.assign(courseConfig, specialCourses);
+
+        let currentCourse = null;
+        const courseNavItem = document.getElementById('courseNavItem');
+        const courseDropdownContainer = document.getElementById('courseDropdownContainer');
+        const courseDropdown = document.getElementById('courseDropdown');
+        const scoreImageContainer = document.getElementById('scoreImageContainer');
+
+        // 初始化下拉菜单
+        function initCourseDropdown() {
+            courseDropdown.innerHTML = '';
+            Object.keys(courseConfig).forEach(courseName => {
+                const option = document.createElement('option');
+                option.value = courseName;
+                option.textContent = courseName;
+                courseDropdown.appendChild(option);
+            });
+            courseDropdown.addEventListener('change', () => {
+                selectCourse(courseDropdown.value);
+                courseDropdownContainer.classList.remove('show');
+            });
+        }
+
+        // 选择课程加载乐谱（带加载状态）
+        function selectCourse(courseName) {
+            currentCourse = courseName;
+            // 显示加载状态
+            scoreImageContainer.innerHTML = `
+                <div class="score-loading">
+                    <span class="loading"></span>
+                    <span>加载中...</span>
+                </div>
+            `;
+            setTimeout(loadAllScores, 100); // 延迟加载，避免快速切换闪烁
+        }
+
+        // 加载所有乐谱图片
+        function loadAllScores() {
+            if (!currentCourse) return;
+            const totalScores = courseConfig[currentCourse];
+            scoreImageContainer.innerHTML = '';
+
+            for (let i = 1; i <= totalScores; i++) {
+                const img = document.createElement('img');
+                img.src = `./scores/${currentCourse}/${i}.jpg`;
+                img.alt = `${currentCourse} - 第${i}张`;
+                img.className = 'score-image-item';
+                img.loading = 'lazy'; // 懒加载图片
+
+                img.onerror = () => {
+                    img.src = './image/default-score.jpg';
+                    img.alt = `${currentCourse} - 第${i}张（未找到）`;
+                };
+
+                scoreImageContainer.appendChild(img);
+            }
+        }
+
+        // 移动端下拉菜单控制
+        courseNavItem.addEventListener('click', (e) => {
+            e.stopPropagation();
+            courseDropdownContainer.classList.toggle('show');
+        });
+
+        document.addEventListener('click', () => {
+            courseDropdownContainer.classList.remove('show');
+        });
+
+        courseDropdownContainer.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // 初始化
+        window.addEventListener('load', () => {
+            initCourseDropdown();
+            const firstCourse = Object.keys(courseConfig)[0];
+            if (firstCourse) {
+                courseDropdown.value = firstCourse;
+                selectCourse(firstCourse);
+            }
+        });
+    </script>
+
+    <script type="module">
+        import { initMetronome } from './metronome.js';
+        window.addEventListener('load', initMetronome);
+    </script>
+</body>
+</html>

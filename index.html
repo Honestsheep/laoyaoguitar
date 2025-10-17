@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="老姚吉他从零起步基础教学，为吉他初学者提供系统教程，几十万琴友的共同选择">
+    <title>老姚吉他 - 首页</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .intro {
+            padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 4vw, 3rem);
+            display: flex;
+            justify-content: center;
+        }
+        .text {
+            max-width: 680px;
+            width: 100%;
+            line-height: 1.8;
+        }
+        .intro-title {
+            font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+            font-weight: 600;
+            text-align: center;
+            margin: 0 0 1.2em;
+            letter-spacing: 1px;
+        }
+        .intro-title .sub {
+            display: block;
+            font-size: 0.5em;
+            font-weight: 400;
+            opacity: 0.7;
+            margin-top: 0.4em;
+        }
+        .intro-lead {
+            font-size: 1.05rem;
+            text-align: justify;
+            text-indent: 2em;
+            margin: 0 0 2.5em;
+        }
+        .intro-quote {
+            margin: 2em 0;
+            padding: 1.2em 1.8em;
+            border-left: 4px solid #4fc3f7;
+            background: rgba(255,255,255,0.04);
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .intro-quote:hover { background: rgba(255,255,255,0.08); }
+        .intro-quote blockquote { margin: 0; font-style: italic; }
+        .intro-quote figcaption {
+            text-align: right;
+            margin-top: 0.6em;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+        .intro-quote.secondary { border-left-color: #81c784; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+    <header class="headbox">
+      <div class="loayao-logo">
+        <a href="./index.html">
+          <!-- 路径改为 ./image/logo.webp -->
+          <img src="./image/logo.webp" alt="老姚吉他logo" loading="lazy">
+        </a>
+      </div> 
+        <span class="active">从零起步基础教学</span>
+        <span><a href="./sheet.html">乐谱</a></span>
+    </header>
+
+    <main class="intro">
+        <div class="text">
+            <h2 class="intro-title">
+                老姚吉他从零起步基础教学
+                <span class="sub">—— 几十万琴友的共同选择</span>
+            </h2>
+            <p class="intro-lead">
+                本网目录只收录了木吉他课程的相关资料。它从最简单的基础知识开始，每节课渗透一点实用技巧；如果你把吉他当作兴趣爱好，这是一份不可多得的良心教程。
+            </p>
+            <figure class="intro-quote">
+                <blockquote>
+                    吉他 3 天学不会，两星期也入不了门。<br>
+                    如果你真的想学好它，那就花一两年的时间。
+                </blockquote>
+                <figcaption>—— 老姚</figcaption>
+            </figure>
+
+            <figure class="intro-quote secondary">
+                <blockquote>学习一个特长，有可能改变你的一生。</blockquote>
+                <figcaption>—— 老姚</figcaption>
+            </figure>
+        </div>
+    </main>
+
+    <!-- 引入公共页脚组件 -->
+    <script src="./footer.js"></script>
+    <div class="loayao-link" id="footerLinks"></div>
+</body>
+</html>
