@@ -52,7 +52,7 @@ function initAudioContext() {
             audioContext.onstatechange = () => {
                 if (audioContext.state === 'suspended' && isRunning) {
                     audioContext.resume().catch(err => {
-                        console.log('音频恢复失败:', err);
+                 
                         showToast('请点击页面恢复音频播放');
                     });
                 }
@@ -320,4 +320,5 @@ export function initMetronome() {
             audioContext.resume();
         }
     });
+
 }
